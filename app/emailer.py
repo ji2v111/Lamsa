@@ -1,68 +1,36 @@
-import smtplib
-from email.mime.text import MIMEText
+import os
+import resend
 
-from .config import SMTP_HOST, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, SMTP_FROM_NAME, BASE_URL
-
-
-def is_email_configured() -> bool:
-    return bool(SMTP_USERNAME and SMTP_PASSWORD)
-
-
-def send_welcome_email(to_email: str, tenant_name: str) -> bool:
-    """يُرسل تلقائيًا عند إنشاء محل جديد — هذا هو إشعار "التسجيل" الفعلي لصاحب المحل."""
-    login_url = f"{BASE_URL}/portal/login"
-    body = (
-        f"مرحبًا،\n\n"
-        f"تم تجهيز لوحة \"{tenant_name}\" الخاصة بك على منصة لمسة.\n\n"
-        f"للدخول إلى لوحتك ومتابعة تقييمات وملاحظات عملائك:\n"
-        f"١) افتح الرابط: {login_url}\n"
-        f"٢) اكتب بريدك هذا: {to_email}\n"
-        f"٣) بيوصلك رمز دخول من 6 أرقام على نفس البريد — أدخله وخلاص.\n\n"
-        f"ما فيه كلمة مرور تحفظها — بريدك هو مفتاح الدخول في كل مرة.\n"
-    )
-    if not is_email_configured():
-        print(f"[DEV] لا يوجد إعداد SMTP — رسالة الترحيب لـ {to_email}:\n{body}")
-        return False
-
-    msg = MIMEText(body, "plain", "utf-8")
-    msg["Subject"] = f"لوحتك على لمسة جاهزة — {tenant_name}"
-    msg["From"] = f"{SMTP_FROM_NAME} <{SMTP_USERNAME}>"
-    msg["To"] = to_email
-
-    try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
-            server.starttls()
-            server.login(SMTP_USERNAME, SMTP_PASSWORD)
-            server.sendmail(SMTP_USERNAME, [to_email], msg.as_string())
-        return True
-    except Exception as e:
-        print(f"[ERROR] فشل إرسال رسالة الترحيب لـ {to_email}: {e}")
-        return False
-
+resend.api_key = os.getenv("RESEND_API_KEY", "").strip()
+EMAIL_FROM = os.getenv("EMAIL_FROM", "onboarding@resend.dev").strip()
 
 def send_otp_email(to_email: str, code: str) -> bool:
-    """يرسل رمز الدخول بالبريد. يرجع True لو نجح الإرسال الفعلي."""
-    if not is_email_configured():
-        # وضع التطوير المحلي بدون إعداد SMTP بعد: نطبع الرمز بسجل السيرفر
-        # عشان تقدر تجرب تسجيل الدخول قبل ما تربط بريد حقيقي.
-        print(f"[DEV] لا يوجد إعداد SMTP — رمز الدخول لـ {to_email} هو: {code}")
-        return False
+    if not resend.api_key:
+        print(f"[DEV] Missing RESEND_API_KEY. OTP for {to_email}: {code}")
+        return True
 
-    msg = MIMEText(
-        f"رمز الدخول للوحة محلك: {code}\n\nصالح لمدة 10 دقائق فقط. لو ما طلبت هذا الرمز، تجاهل الرسالة.",
-        "plain",
-        "utf-8",
-    )
-    msg["Subject"] = f"رمز الدخول: {code}"
-    msg["From"] = f"{SMTP_FROM_NAME} <{SMTP_USERNAME}>"
-    msg["To"] = to_email
+    params = {
+        "from": EMAIL_FROM,
+        "to": to_email,
+        "subject": "رمز التحقق - لمسة",
+        "html": f"""
+        <div dir="rtl" style="font-family: Arial, sans-serif; padding: 24px; background-color: #f8fafc; text-align: center;">
+            <div style="max-width: 440px; margin: 0 auto; background: #ffffff; padding: 32px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <h2 style="color: #0f172a; margin-bottom: 12px;">تسجيل الدخول</h2>
+                <p style="color: #475569; font-size: 15px; margin-bottom: 24px;">رمز التحقق الخاص بك هو:</p>
+                <div style="font-size: 32px; font-weight: bold; letter-spacing: 8px; color: #2563eb; background: #eff6ff; padding: 14px; border-radius: 8px; display: inline-block;">
+                    {code}
+                </div>
+                <p style="color: #94a3b8; font-size: 13px; margin-top: 24px;">صلاحية هذا الرمز مؤقتة. إذا لم تكن أنت من طلبه، تجاهل هذه الرسالة.</p>
+            </div>
+        </div>
+        """
+    }
 
     try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=10) as server:
-            server.starttls()
-            server.login(SMTP_USERNAME, SMTP_PASSWORD)
-            server.sendmail(SMTP_USERNAME, [to_email], msg.as_string())
+        response = resend.Emails.send(params)
+        print(f"[INFO] Email sent successfully to {to_email}. Response: {response}")
         return True
     except Exception as e:
-        print(f"[ERROR] فشل إرسال البريد لـ {to_email}: {e}")
+        print(f"[ERROR] Failed to send email via Resend: {e}")
         return False
