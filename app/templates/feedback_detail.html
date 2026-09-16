@@ -1,0 +1,53 @@
+{% extends "admin_base.html" %}
+{% block title %}ملاحظة #{{ fb.id }}{% endblock %}
+{% block content %}
+
+<p class="muted" style="margin-bottom:14px;"><a href="{{ back_url }}">{{ back_label }}</a></p>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-alert.png');mask-image:url('/static/icons/icon-alert.png');"></span></span>
+      <h1 style="margin:0;">الأولوية: {{ fb.severity or '—' }}/5</h1>
+    </div>
+    <span class="pill {{ 'active' if fb.status=='resolved' else 'inactive' if fb.status=='new' else 'trial' }}">{{ 'جديدة' if fb.status=='new' else 'تمت المراجعة' if fb.status=='seen' else 'تم الحل' }}</span>
+  </div>
+
+  <p class="muted" style="margin-bottom:6px;">الرسالة كاملة:</p>
+  <p style="background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:16px;
+     white-space:pre-wrap;word-break:break-word;line-height:1.8;margin:0 0 18px;">{{ fb.message }}</p>
+
+  <p class="muted" style="margin-bottom:14px;">وصلت بتاريخ {{ fb.created_at.strftime('%Y-%m-%d الساعة %H:%M') }}</p>
+
+  {% if fb.customer_contact %}
+  <div style="background:var(--sage-bg);border-radius:12px;padding:14px 16px;margin-bottom:18px;">
+    <p class="muted" style="margin:0 0 8px;">الزبون ترك وسيلة تواصل: <strong style="color:var(--text);">{{ fb.customer_contact }}</strong></p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      {% if wa_number %}<a class="btn" href="https://wa.me/{{ wa_number }}" target="_blank">تواصل عبر واتساب</a>{% endif %}
+      <a class="btn ghost" href="tel:{{ fb.customer_contact }}">اتصال مباشر</a>
+    </div>
+  </div>
+  {% else %}
+  <p class="muted" style="margin-bottom:18px;">الزبون ما ترك وسيلة تواصل.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-edit.png');mask-image:url('/static/icons/icon-edit.png');"></span></span>
+    <h1 style="margin:0;">مراجعة الشكوى</h1>
+  </div>
+  <form method="post" action="{{ update_action }}">
+    <label for="st">الحالة</label>
+    <select id="st" name="status">
+      <option value="new" {% if fb.status=='new' %}selected{% endif %}>جديدة (لم تُراجع)</option>
+      <option value="seen" {% if fb.status=='seen' %}selected{% endif %}>تمت المراجعة</option>
+      <option value="resolved" {% if fb.status=='resolved' %}selected{% endif %}>تم الحل</option>
+    </select>
+    <label for="note">ملاحظة داخلية</label>
+    <textarea id="note" name="manager_note" rows="3" style="resize:vertical;">{{ fb.manager_note or '' }}</textarea>
+    <button class="btn" type="submit">حفظ</button>
+  </form>
+</div>
+
+{% endblock %}

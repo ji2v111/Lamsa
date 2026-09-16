@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}شكرًا لك{% endblock %}
+{% block content %}
+<div class="center-state" style="padding:0 30px;">
+  <img class="for-light" src="/static/illustrations/success-light.jpg" alt="" role="presentation"><img class="for-dark" src="/static/illustrations/success-dark.jpg" alt="" role="presentation">
+  <h2>شكرًا لك</h2>
+  <p>وصلت ملاحظتك إلى إدارة {{ tenant.name }} مباشرة، وسيتم التواصل معك إن احتجت ذلك.</p>
+</div>
+{% endblock %}

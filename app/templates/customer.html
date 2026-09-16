@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ tenant.name }}{% endblock %}
+{% block content %}
+<div class="content">
+  <div class="brand">
+    <svg viewBox="0 0 100 100"><path class="logo-star" d="M50,16 L58.52,38.27 L82.34,39.49 L63.79,54.48 L69.99,77.51 L50,64.5 L30.01,77.51 L36.21,54.48 L17.66,39.49 L41.48,38.27 Z"/><path class="logo-ripple" d="M60,12 A8,8 0 0,1 75,15" fill="none" stroke-width="2.8" stroke-linecap="round"/><path class="logo-ripple" d="M54,3 A17,17 0 0,1 82,10" fill="none" stroke-width="2.8" stroke-linecap="round"/></svg>
+    <span class="word">لمسة</span>
+  </div>
+
+  <div class="biz">
+    <h1>{{ tenant.name }}</h1>
+    <p>يسعدنا نسمع رأيك</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="actions">
+    <a class="action-card" href="/r/{{ tenant.slug }}/go">
+      <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-shield.png');mask-image:url('/static/icons/icon-shield.png');"></span></span>
+      <span class="txt">
+        <span class="main">قيّم تجربتنا على قوقل</span>
+        <span class="sub">يستغرق أقل من عشر ثوانٍ</span>
+      </span>
+      <span class="arrow">‹</span>
+    </a>
+
+    <a class="action-card" href="/r/{{ tenant.slug }}/feedback">
+      <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-email.png');mask-image:url('/static/icons/icon-email.png');"></span></span>
+      <span class="txt">
+        <span class="main">تواصل مع الإدارة مباشرة</span>
+        <span class="sub">لأي ملاحظة أو مشكلة</span>
+      </span>
+      <span class="arrow">‹</span>
+    </a>
+  </div>
+
+  <p class="note">نعرض لك نفس الخيارين دائمًا لكل الزوار — رأيك يصل إلينا في الحالتين.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends "admin_base.html" %}
+{% block title %}{{ tenant.name }}{% endblock %}
+{% block content %}
+
+<p class="muted" style="margin-bottom:14px;"><a href="/admin">‹ كل المحلات</a></p>
+
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
+    <div>
+      <h1 style="margin-bottom:6px;">{{ tenant.name }}</h1>
+      <p class="muted" style="margin:0 0 8px;">الرابط العام: <a href="{{ public_url }}" target="_blank">{{ public_url }}</a></p>
+      <p class="muted" style="margin:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        الحالة:
+        <span class="pill {{ tenant.membership.effective_status() }}">{{ 'نشط' if tenant.membership.effective_status()=='active' else 'فترة سماح' if tenant.membership.effective_status()=='grace' else 'موقوف' }}</span>
+        {% set d = tenant.membership.days_remaining() %}
+        {% if d is not none %}
+          {% if tenant.membership.effective_status() == 'active' %}<span>— يتبقى {{ d }} يوم</span>{% endif %}
+          {% if tenant.membership.effective_status() == 'grace' %}<span>— فترة سماح، تنتهي خلال {{ d }} يوم</span>{% endif %}
+        {% endif %}
+      </p>
+    </div>
+    <div style="text-align:center;">
+      <span class="icon-badge" style="width:34px;height:34px;border-radius:8px;margin:0 auto 6px;">
+        <span class="icon" style="width:17px;height:17px;-webkit-mask-image:url('/static/icons/icon-qr.png');mask-image:url('/static/icons/icon-qr.png');"></span>
+      </span>
+      <img src="/admin/tenants/{{ tenant.id }}/qr.png" width="110" height="110" style="border:1px solid var(--line);border-radius:10px;display:block;">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-calendar.png');mask-image:url('/static/icons/icon-calendar.png');"></span></span>
+    <h1 style="margin:0;">تجديد / تحديد مدة الاشتراك</h1>
+  </div>
+  <form method="post" action="/admin/tenants/{{ tenant.id }}/renew">
+    <div class="grid2">
+      <div>
+        <label for="dur">المدة (تبدأ من الآن)</label>
+        <select id="dur" name="duration">
+          {% for key, label in duration_labels.items() %}
+          <option value="{{ key }}">{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="grace">مهلة السماح بعد الانتهاء (أيام)</label>
+        <input type="text" id="grace" name="grace_days" value="{{ tenant.membership.grace_period_days }}">
+      </div>
+    </div>
+    <button class="btn" type="submit">تفعيل هذه المدة الآن</button>
+  </form>
+  <p class="muted" style="margin-top:10px;">مثال للتجربة: اختر "يوم واحد" ومهلة سماح ٠، وراقب الحالة تتحول تلقائيًا بعد ٢٤ ساعة بدون أي تدخل منك.</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-toggle.png');mask-image:url('/static/icons/icon-toggle.png');"></span></span>
+    <h1 style="margin:0;">إيقاف فوري (يتجاوز أي تاريخ)</h1>
+  </div>
+  <p class="muted" style="margin-bottom:14px;">مفتاح طوارئ منفصل تمامًا عن التاريخ أعلاه — يوقف الخدمة فورًا بغض النظر عن باقي المدة، أو يلغي إيقاف سابق.</p>
+  <form method="post" action="/admin/tenants/{{ tenant.id }}/toggle-manual">
+    {% if tenant.membership.manually_disabled %}
+      <button class="btn" type="submit">إلغاء الإيقاف الفوري</button>
+    {% else %}
+      <button class="btn danger" type="submit">إيقاف فوري الآن</button>
+    {% endif %}
+  </form>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-email.png');mask-image:url('/static/icons/icon-email.png');"></span></span>
+    <h1 style="margin:0;">دخول صاحب المحل</h1>
+  </div>
+  <p class="muted" style="margin-bottom:12px;">يدخل صاحب المحل بنفسه من <a href="/portal/login" target="_blank">/portal/login</a> ببريده تحت، ويستلم رمز دخول لإيميله.</p>
+  <form method="post" action="/admin/tenants/{{ tenant.id }}/owner-email">
+    <label for="oemail">بريد صاحب المحل</label>
+    <input type="email" id="oemail" name="owner_email" value="{{ tenant.owner_email or '' }}" required
+      pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" title="اكتب بريدًا إلكترونيًا صحيحًا">
+    <button class="btn ghost" type="submit">حفظ</button>
+  </form>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-alert.png');mask-image:url('/static/icons/icon-alert.png');"></span></span>
+    <h1 style="margin:0;">تنبيهات المدير</h1>
+  </div>
+  <form method="post" action="/admin/tenants/{{ tenant.id }}/notify-settings">
+    <label for="tgid">معرّف <bdi>Telegram</bdi> لصاحب المحل</label>
+    <input type="text" id="tgid" name="telegram_chat_id" value="{{ tenant.telegram_chat_id or '' }}" placeholder="مثال: 123456789">
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <input type="checkbox" name="telegram_alerts" {% if tenant.membership.features.get('telegram_alerts') %}checked{% endif %} style="width:auto;margin:0;">
+      تفعيل التنبيه الفوري عبر <bdi>Telegram</bdi> لهذا المحل
+    </label>
+    <button class="btn ghost" type="submit">حفظ</button>
+  </form>
+  <p class="muted" style="margin-top:10px;">كيف تجيب <bdi>chat id</bdi>: خلي صاحب المحل يرسل أي رسالة للبوت من تيليجرام، ثم افتح الرابط الموضح بملف <bdi>README</bdi> لجلب الرقم.</p>
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-analytics.png');mask-image:url('/static/icons/icon-analytics.png');"></span></span>
+    <h1 style="margin:0;">الملاحظات ({{ feedbacks|length }})</h1>
+  </div>
+  {% if feedbacks %}
+  <div style="overflow-x:auto;">
+  <table>
+    <tr><th>الأولوية</th><th>مقتطف</th><th>تواصل</th><th>الحالة</th><th>التاريخ</th><th></th></tr>
+    {% for f in feedbacks %}
+    <tr>
+      <td>{{ f.severity or '—' }}/5</td>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ f.message }}</td>
+      <td>{{ 'نعم' if f.customer_contact else '—' }}</td>
+      <td><span class="pill {{ 'active' if f.status=='resolved' else 'inactive' if f.status=='new' else 'trial' }}">{{ 'جديدة' if f.status=='new' else 'تمت المراجعة' if f.status=='seen' else 'تم الحل' }}</span></td>
+      <td class="muted">{{ f.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td><a class="btn ghost" href="/admin/feedback/{{ f.id }}">فتح</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <img class="for-light" src="/static/illustrations/empty-state-light.jpg" alt=""><img class="for-dark" src="/static/illustrations/empty-state-dark.jpg" alt="">
+    <h3>ولا ملاحظة وصلت بعد</h3>
+    <p>علامة صحية — أول ما يتفاعل زبون مع البطاقة، ملاحظته تظهر هنا فورًا مع تنبيه مباشر لك.</p>
+  </div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h1>مسحات آخر ٣٠ يوم</h1>
+  <p>قوقل مباشرة: <strong>{{ google_scans }}</strong> &nbsp;|&nbsp; تواصل مع الإدارة: <strong>{{ feedback_scans }}</strong></p>
+  <p class="muted" style="margin-top:6px;">نسبة اختيار "تواصل مع الإدارة" هي أفضل مؤشر اتجاه شعور عام بدون ما نجبر أي زبون يقيّم رقميًا.</p>
+</div>
+
+<div class="card" style="border-color:var(--danger-bg);">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <span class="icon-badge" style="background:var(--danger-bg);"><span class="icon" style="background-color:var(--danger);-webkit-mask-image:url('/static/icons/icon-delete.png');mask-image:url('/static/icons/icon-delete.png');"></span></span>
+    <h1 style="margin:0;color:var(--danger);">حذف المحل</h1>
+  </div>
+  <p class="muted" style="margin-bottom:14px;">يحذف المحل نهائيًا مع كل الملاحظات وسجل المسحات المرتبطة به. لا يمكن التراجع.</p>
+  <form method="post" action="/admin/tenants/{{ tenant.id }}/delete" onsubmit="return confirm('حذف {{ tenant.name }} نهائيًا مع كل بياناته؟ هذا الإجراء لا يمكن التراجع عنه.');">
+    <button class="btn danger" type="submit">حذف المحل نهائيًا</button>
+  </form>
+</div>
+
+{% endblock %}

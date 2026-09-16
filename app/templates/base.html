@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}لمسة{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --text:#1E2023; --text-soft:rgba(30,32,35,.68); --text-faint:rgba(30,32,35,.40);
+    --brass:#9C7A2E; --brass-strong:#7D6021;
+    --paper:#F6F5F3; --card:#FFFFFF; --card-2:#FBFAF9;
+    --line:#DEDAD2; --line-strong:#8C8270;
+    --sage:#4B6E52; --sage-bg:#E7EDE6;
+    --amber:#8A5A16; --amber-bg:#FBEBD0;
+    --danger:#A3352E; --danger-bg:#F6E4E2;
+    --focus:#2F6FEB;
+    --radius:18px;
+  }
+  html[data-theme="dark"]{
+    --text:#F0EFEC; --text-soft:rgba(240,239,236,.72); --text-faint:rgba(240,239,236,.42);
+    --brass:#D3A94F; --brass-strong:#E8C583;
+    --paper:#18191B; --card:#222325; --card-2:#2A2B2D;
+    --line:#333436; --line-strong:#6E6F72;
+    --sage:#8FB39A; --sage-bg:#1E2B24;
+    --amber:#F0C572; --amber-bg:#332209;
+    --danger:#E0958D; --danger-bg:#3A1613;
+    --focus:#7AA6FF;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--paper);}
+  body{font-family:'Tajawal',sans-serif;color:var(--text);min-height:100vh;display:flex;justify-content:center;
+    transition:background .2s ease,color .2s ease;}
+  a{color:inherit;}
+  :focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:4px;}
+  .screen{width:100%;max-width:460px;min-height:100vh;background:var(--paper);display:flex;flex-direction:column;}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 0;}
+  .theme-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line-strong);background:var(--card);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text);padding:0;}
+  .theme-btn svg{width:16px;height:16px;}
+
+  .content{flex:1;display:flex;flex-direction:column;padding:0 28px 40px;}
+  .brand{display:flex;flex-direction:column;align-items:center;padding-top:18px;margin-bottom:26px;}
+  .brand svg{width:46px;height:46px;}
+  .logo-star{fill:var(--text);}
+  .logo-ripple{stroke:var(--brass);}
+  .brand .word{font-family:'Cairo',sans-serif;font-weight:800;font-size:20px;margin-top:6px;}
+
+  .biz{text-align:center;margin-bottom:30px;}
+  .biz h1{font-family:'Cairo',sans-serif;font-weight:700;font-size:22px;margin:0 0 8px;}
+  .biz p{font-size:15px;color:var(--text-soft);margin:0;line-height:1.6;}
+
+  .stars-inline{display:flex;gap:8px;margin-bottom:18px;justify-content:center;}
+  .star-btn{background:none;border:none;padding:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .star-btn svg{width:28px;height:28px;display:block;}
+  .star-btn path{fill:none;stroke:var(--text);stroke-width:2.2;stroke-linejoin:round;opacity:.55;}
+  .star-btn.active path{fill:var(--brass);stroke:var(--brass-strong);opacity:1;}
+
+  .divider{height:1px;background:var(--line);margin:0 0 26px;}
+
+  .actions{display:flex;flex-direction:column;gap:14px;}
+  .action-card{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line-strong);
+    border-radius:16px;padding:16px 18px;cursor:pointer;text-align:right;width:100%;font-family:'Tajawal',sans-serif;
+    text-decoration:none;color:var(--text);}
+  .action-card:active{transform:scale(0.98);}
+  .action-card .icon-badge{width:40px;height:40px;flex-shrink:0;border-radius:12px;background:var(--card-2);
+    display:flex;align-items:center;justify-content:center;}
+  .icon{width:22px;height:22px;background-color:var(--brass);
+    -webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-position:center;mask-position:center;}
+  .icon-nfc{-webkit-mask-image:url('/static/icons/icon-nfc.png');mask-image:url('/static/icons/icon-nfc.png');}
+  .icon-email{-webkit-mask-image:url('/static/icons/icon-email.png');mask-image:url('/static/icons/icon-email.png');background-color:var(--text);}
+  .action-card .txt{flex:1;}
+  .action-card .txt .main{font-weight:700;font-size:15.5px;display:block;margin-bottom:2px;}
+  .action-card .txt .sub{font-size:12.5px;color:var(--text-soft);}
+  .action-card .arrow{color:var(--text-faint);}
+
+  .note{font-size:12px;color:var(--text-soft);text-align:center;margin-top:22px;line-height:1.7;}
+
+  textarea,input[type=text]{width:100%;border:1.5px solid var(--line-strong);border-radius:14px;padding:14px;
+    font-family:'Tajawal',sans-serif;font-size:14.5px;resize:none;background:var(--card);color:var(--text);}
+  textarea{min-height:110px;margin-bottom:8px;}
+  input[type=text]{margin-bottom:14px;}
+  textarea::placeholder, input::placeholder{color:var(--text-faint);}
+  .err{color:var(--danger);font-size:12.5px;margin:0 0 12px;display:none;}
+  .err.show{display:block;}
+  .submit-btn{width:100%;background:var(--text);color:var(--paper);border:none;border-radius:14px;
+    padding:15px;font-family:'Tajawal',sans-serif;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:12px;}
+  .cancel-link{display:block;text-align:center;background:none;border:none;color:var(--text-soft);
+    font-family:'Tajawal',sans-serif;font-size:13.5px;cursor:pointer;text-decoration:none;}
+
+  .center-state{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+  .center-state h2{font-family:'Cairo',sans-serif;font-size:19px;margin:0 0 10px;}
+  .center-state p{font-size:14px;color:var(--text-soft);line-height:1.8;margin:0 0 24px;max-width:280px;}
+  .center-state img{width:180px;margin-bottom:8px;}
+  img.for-dark{display:none;}
+  html[data-theme="dark"] img.for-light{display:none;}
+  html[data-theme="dark"] img.for-dark{display:block;}
+</style>
+</head>
+<body>
+<div class="screen">
+  <div class="topbar">
+    <span></span>
+    <button class="theme-btn" id="themeToggle" aria-label="تبديل الوضع الفاتح/الغامق" type="button">
+      <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+    </button>
+  </div>
+  {% block content %}{% endblock %}
+</div>
+<script>
+  var SUN_PATH = '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>';
+  var MOON_PATH = '<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"></path>';
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    document.getElementById('themeIcon').innerHTML = (t === 'dark') ? MOON_PATH : SUN_PATH;
+    localStorage.setItem('lamsa-theme', t);
+  }
+  document.getElementById('themeToggle').addEventListener('click', function(){
+    applyTheme(document.documentElement.getAttribute('data-theme')==='dark' ? 'light' : 'dark');
+  });
+  var saved = localStorage.getItem('lamsa-theme');
+  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+</script>
+</body>
+</html>

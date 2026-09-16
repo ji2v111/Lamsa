@@ -1,0 +1,23 @@
+{% extends "admin_base.html" %}
+{% block title %}تأكيد الرمز{% endblock %}
+{% block body %}
+<div class="login-wrap">
+  <div class="login-card">
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:22px;">
+      <span class="icon-badge" style="width:52px;height:52px;border-radius:16px;">
+        <span class="icon" style="width:26px;height:26px;-webkit-mask-image:url('/static/icons/icon-email.png');mask-image:url('/static/icons/icon-email.png');"></span>
+      </span>
+    </div>
+    <h1 style="text-align:center;">تأكيد رمز الدخول</h1>
+    <p class="muted" style="text-align:center;margin-bottom:20px;">أرسلنا رمز من 6 أرقام إلى<br><strong style="color:var(--text);">{{ email }}</strong></p>
+    <form method="post" action="/portal/verify" novalidate>
+      <label for="code">الرمز</label>
+      <input type="text" id="code" name="code" required autofocus inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
+        placeholder="000000" style="letter-spacing:6px;font-size:20px;text-align:center;" title="6 أرقام بالضبط">
+      {% if error %}<p style="color:var(--danger);font-size:13px;margin-top:-8px;" role="alert">{{ error }}</p>{% endif %}
+      <button class="btn" type="submit" style="width:100%;justify-content:center;margin-bottom:12px;">دخول</button>
+    </form>
+    <p style="text-align:center;"><a href="/portal/login" class="muted">استخدام بريد مختلف / إرسال رمز جديد</a></p>
+  </div>
+</div>
+{% endblock %}

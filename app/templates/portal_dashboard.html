@@ -1,0 +1,66 @@
+{% extends "admin_base.html" %}
+{% block title %}لوحة {{ tenant.name }}{% endblock %}
+{% block content %}
+
+
+<div class="card" style="text-align:center;">
+  <img src="/tenant/{{ tenant.slug }}/logo.png" width="60" height="60" style="border-radius:14px;margin-bottom:12px;">
+  <h1 style="margin-bottom:4px;">{{ tenant.name }}</h1>
+  <p class="muted" style="margin:0 0 18px;">لوحتك الخاصة — لا يشوفها غيرك</p>
+
+  <form method="post" action="/portal/logo" enctype="multipart/form-data" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <input type="file" name="logo" accept="image/png,image/jpeg,image/webp" style="max-width:220px;margin-bottom:0;">
+    <button class="btn ghost" type="submit">تحديث الشعار</button>
+  </form>
+  {% if logo_error %}<p style="color:var(--danger);font-size:13px;margin-top:10px;" role="alert">تعذّر رفع الصورة — تأكد إنها <bdi>PNG</bdi> أو <bdi>JPG</bdi> أو <bdi>WEBP</bdi> وأصغر من 2 ميغا.</p>{% endif %}
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-calendar.png');mask-image:url('/static/icons/icon-calendar.png');"></span></span>
+    <h1 style="margin:0;">اشتراكك</h1>
+  </div>
+  {% set st = tenant.membership.effective_status() %}
+  {% set d = tenant.membership.days_remaining() %}
+  {% if st == 'active' %}
+    <p><span class="pill active">نشط</span>
+      {% if d is not none %}<span class="muted">— يتبقى {{ d }} يوم</span>{% else %}<span class="muted">— بدون تاريخ انتهاء محدد</span>{% endif %}
+    </p>
+  {% elif st == 'grace' %}
+    <p><span class="pill grace">فترة سماح</span> <span class="muted">— اشتراكك انتهى، خدمتك شغالة لـ{{ d }} يوم إضافي. تواصل مع مزود الخدمة للتجديد.</span></p>
+  {% else %}
+    <p><span class="pill inactive">موقوف</span> <span class="muted">— تواصل مع مزود الخدمة لإعادة التفعيل.</span></p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+    <span class="icon-badge"><span class="icon" style="-webkit-mask-image:url('/static/icons/icon-analytics.png');mask-image:url('/static/icons/icon-analytics.png');"></span></span>
+    <h1 style="margin:0;">شكاوى وملاحظات عملائك ({{ feedbacks|length }})</h1>
+  </div>
+  {% if feedbacks %}
+  <div style="overflow-x:auto;">
+  <table>
+    <tr><th>الأولوية</th><th>مقتطف</th><th>تواصل</th><th>الحالة</th><th>التاريخ</th><th></th></tr>
+    {% for f in feedbacks %}
+    <tr>
+      <td>{{ f.severity or '—' }}/5</td>
+      <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ f.message }}</td>
+      <td>{{ 'نعم' if f.customer_contact else '—' }}</td>
+      <td><span class="pill {{ 'active' if f.status=='resolved' else 'inactive' if f.status=='new' else 'trial' }}">{{ 'جديدة' if f.status=='new' else 'تمت المراجعة' if f.status=='seen' else 'تم الحل' }}</span></td>
+      <td class="muted">{{ f.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+      <td><a class="btn ghost" href="/portal/feedback/{{ f.id }}">فتح</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <img class="for-light" src="/static/illustrations/empty-state-light.jpg" alt=""><img class="for-dark" src="/static/illustrations/empty-state-dark.jpg" alt="">
+    <h3>ولا شكوى وصلت بعد</h3>
+    <p>علامة صحية — أول ملاحظة توصل من عميل تظهر هنا فورًا.</p>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

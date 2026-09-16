@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}تواصل مع الإدارة{% endblock %}
+{% block content %}
+<div class="content">
+  <div class="brand">
+    <svg viewBox="0 0 100 100"><path class="logo-star" d="M50,16 L58.52,38.27 L82.34,39.49 L63.79,54.48 L69.99,77.51 L50,64.5 L30.01,77.51 L36.21,54.48 L17.66,39.49 L41.48,38.27 Z"/><path class="logo-ripple" d="M60,12 A8,8 0 0,1 75,15" fill="none" stroke-width="2.8" stroke-linecap="round"/><path class="logo-ripple" d="M54,3 A17,17 0 0,1 82,10" fill="none" stroke-width="2.8" stroke-linecap="round"/></svg>
+    <span class="word">لمسة</span>
+  </div>
+
+  <div class="biz">
+    <h1>شاركنا ملاحظتك</h1>
+    <p>تصل مباشرة لصاحب {{ tenant.name }}، ولا تُنشر في أي مكان عام</p>
+  </div>
+
+  <form method="post" action="/r/{{ tenant.slug }}/feedback" id="fbForm">
+    <div class="stars-inline" id="starsRow" role="group" aria-label="أولوية الملاحظة من 5">
+      <input type="hidden" name="severity" id="severityInput" value="">
+    </div>
+
+    <label for="fbText" style="font-size:13px;color:var(--text-soft);display:block;margin-bottom:6px;">ملاحظتك</label>
+    <textarea name="message" id="fbText" placeholder="اكتب ملاحظتك هنا..." required></textarea>
+    <p class="err" id="fbErr" role="alert">اكتب ملاحظتك قبل الإرسال.</p>
+
+    <label for="contactInput" style="font-size:13px;color:var(--text-soft);display:block;margin-bottom:6px;">رقم تواصل (اختياري)</label>
+    <input type="text" name="customer_contact" id="contactInput" placeholder="لو تحب نرد عليك">
+
+    <button type="submit" class="submit-btn">إرسال</button>
+    <a class="cancel-link" href="/r/{{ tenant.slug }}">رجوع</a>
+  </form>
+</div>
+
+<script>
+  var starPath = "M16,8 L18,13.25 L23.61,13.53 L19.23,17.05 L20.70,22.47 L16,19.4 L11.30,22.47 L12.77,17.05 L8.39,13.53 L14,13.25 Z";
+  var row = document.getElementById('starsRow');
+  var hidden = document.getElementById('severityInput');
+  for (var i = 1; i <= 5; i++) {
+    (function(i){
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'star-btn';
+      b.setAttribute('aria-label', 'الأولوية ' + i + ' من 5');
+      b.innerHTML = '<svg viewBox="0 0 32 32"><path d="' + starPath + '"/></svg>';
+      b.addEventListener('click', function(){
+        hidden.value = i;
+        var stars = document.querySelectorAll('#starsRow .star-btn');
+        for (var j=0;j<stars.length;j++){ stars[j].classList.toggle('active', j < i); }
+      });
+      row.appendChild(b);
+    })(i);
+  }
+  document.getElementById('fbForm').addEventListener('submit', function(e){
+    var val = document.getElementById('fbText').value.trim();
+    var err = document.getElementById('fbErr');
+    if (!val) { e.preventDefault(); err.classList.add('show'); }
+    else { err.classList.remove('show'); }
+  });
+</script>
+{% endblock %}
