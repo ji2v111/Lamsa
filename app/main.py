@@ -27,6 +27,14 @@ app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET)
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), "templates")
 templates = Jinja2Templates(directory=TEMPLATES_DIR)
+def to_ksa_format(dt, fmt="%Y-%m-%d %H:%M"):
+    if not dt:
+        return ""
+    # إضافة فارق 3 ساعات لتحويل توقيت UTC المحفوظ إلى توقيت السعودية
+    ksa_time = dt + datetime.timedelta(hours=3)
+    return ksa_time.strftime(fmt)
+
+templates.env.filters["ksa_time"] = to_ksa_format
 
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

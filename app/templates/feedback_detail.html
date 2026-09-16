@@ -17,8 +17,7 @@
   <p style="background:var(--card-2);border:1px solid var(--line);border-radius:12px;padding:16px;
      white-space:pre-wrap;word-break:break-word;line-height:1.8;margin:0 0 18px;">{{ fb.message }}</p>
 
-  <p class="muted" style="margin-bottom:14px;">وصلت بتاريخ {{ fb.created_at.strftime('%Y-%m-%d الساعة %H:%M') }}</p>
-
+<p class="muted" style="margin-bottom:14px;">وصلت بتاريخ {{ fb.created_at | ksa_time('%Y-%m-%d الساعة %I:%M %p') }}</p>
   {% if fb.customer_contact %}
   <div style="background:var(--sage-bg);border-radius:12px;padding:14px 16px;margin-bottom:18px;">
     <p class="muted" style="margin:0 0 8px;">الزبون ترك وسيلة تواصل: <strong style="color:var(--text);">{{ fb.customer_contact }}</strong></p>
