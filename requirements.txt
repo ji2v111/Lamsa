@@ -3,6 +3,8 @@ uvicorn[standard]
 sqlalchemy
 psycopg2-binary
 pydantic
+pydantic[email]
+email-validator
 python-dotenv
 jinja2
 python-multipart
@@ -13,3 +15,4 @@ Pillow
 itsdangerous
 passlib[bcrypt]
 bcrypt
+aiosmtplib
