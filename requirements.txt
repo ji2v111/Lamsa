@@ -10,3 +10,6 @@ httpx
 requests
 qrcode[pil]
 Pillow
+itsdangerous
+passlib[bcrypt]
+bcrypt
