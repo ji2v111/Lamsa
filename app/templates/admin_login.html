@@ -4,51 +4,20 @@
 <div class="login-wrap">
   <div class="login-row">
     <div class="login-hero">
-      <img class="for-light" src="/static/illustrations/hero-light.jpg" alt="لمسة">
-      <img class="for-dark" src="/static/illustrations/hero-dark.jpg" alt="لمسة">
     </div>
     <div class="login-card">
-      <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:22px;">
-        <svg viewBox="0 0 100 100" style="width:40px;height:40px;">
-          <path class="logo-star" d="M50,16 L58.52,38.27 L82.34,39.49 L63.79,54.48 L69.99,77.51 L50,64.5 L30.01,77.51 L36.21,54.48 L17.66,39.49 L41.48,38.27 Z"/>
-          <path class="logo-ripple" d="M60,12 A8,8 0 0,1 75,15" fill="none" stroke-width="2.8" stroke-linecap="round"/>
-          <path class="logo-ripple" d="M54,3 A17,17 0 0,1 82,10" fill="none" stroke-width="2.8" stroke-linecap="round"/>
-        </svg>
-        <span style="font-family:'Cairo',sans-serif;font-weight:800;font-size:17px;margin-top:6px;">لمسة</span>
-      </div>
-      <h1 style="text-align:center;">لوحة التحكم</h1>
-      <form method="post" action="/admin/login">
-        <label for="pw">كلمة المرور</label>
-        <input type="password" id="pw" name="password" autofocus required>
-        {% if error %}<p style="color:var(--danger);font-size:13px;margin-top:-8px;" role="alert">{{ error }}</p>{% endif %}
-        <button class="btn" type="submit" style="width:100%;justify-content:center;">دخول</button>
-      </form>
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:22px;">
+      <svg viewBox="0 0 100 100" style="width:40px;height:40px;"><path class="logo-star" d="M50,16 L58.52,38.27 L82.34,39.49 L63.79,54.48 L69.99,77.51 L50,64.5 L30.01,77.51 L36.21,54.48 L17.66,39.49 L41.48,38.27 Z"/><path class="logo-ripple" d="M60,12 A8,8 0 0,1 75,15" fill="none" stroke-width="2.8" stroke-linecap="round"/><path class="logo-ripple" d="M54,3 A17,17 0 0,1 82,10" fill="none" stroke-width="2.8" stroke-linecap="round"/></svg>
+      <span style="font-family:'Cairo',sans-serif;font-weight:800;font-size:17px;margin-top:6px;">لمسة</span>
+    </div>
+    <h1 style="text-align:center;">لوحة التحكم</h1>
+    <form method="post" action="/admin/login">
+      <label for="pw">كلمة المرور</label>
+      <input type="password" id="pw" name="password" autofocus required>
+      {% if error %}<p style="color:var(--danger);font-size:13px;margin-top:-8px;" role="alert">{{ error }}</p>{% endif %}
+      <button class="btn" type="submit" style="width:100%;justify-content:center;">دخول</button>
+    </form>
     </div>
   </div>
 </div>
-
-<style>
-  /* ضبط التناسق والتوازن مع الحفاظ على نفس العناصر الأصلية */
-  .login-row {
-    gap: 24px;
-    align-items: stretch;
-  }
-  .login-hero {
-    max-width: 320px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .login-hero img {
-    height: 100%;
-    object-fit: cover;
-    border: 1px solid var(--line);
-  }
-  .login-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin-bottom: 0;
-  }
-</style>
 {% endblock %}
