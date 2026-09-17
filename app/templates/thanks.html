@@ -1,41 +1,72 @@
 {% extends "base.html" %}
 {% block title %}شكرًا لك{% endblock %}
 {% block content %}
-<div class="center-state" style="padding:0 30px;">
-  <div class="success-icon-wrap">
-    <svg viewBox="0 0 120 120" class="success-svg">
-      <circle cx="60" cy="60" r="46" class="success-circle"/>
-      <path class="success-check" d="M42 61 L54 73 L78 47" fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-      <path class="success-star" d="M28,36 L30,41 L35,41 L31,44 L33,49 L28,46 L23,49 L25,44 L21,41 L26,41 Z"/>
-      <path class="success-star" d="M92,30 L94,35 L99,35 L95,38 L97,43 L92,40 L87,43 L89,38 L85,35 L90,35 Z"/>
-      <path class="success-star" d="M90,82 L91.5,85.5 L95.5,85.5 L92.5,88 L94,92 L90,89.5 L86,92 L87.5,88 L84.5,85.5 L88.5,85.5 Z"/>
-    </svg>
+<div class="thanks-wrapper">
+  <div class="thanks-card">
+    <div class="icon-ring">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+    </div>
+    <h2>شكرًا لك</h2>
+    <p>وصلت ملاحظتك إلى إدارة <strong>{{ tenant.name }}</strong> مباشرة، وسيتم التواصل معك إن احتجت ذلك.</p>
   </div>
-  <h2>شكرًا لك</h2>
-  <p>وصلت ملاحظتك إلى إدارة {{ tenant.name }} مباشرة، وسيتم التواصل معك إن احتجت ذلك.</p>
 </div>
 
 <style>
-  .success-icon-wrap {
+  .thanks-wrapper {
+    min-height: 65vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    justify-content: center;
+    padding: 20px;
   }
-  .success-svg {
-    width: 100px;
-    height: 100px;
+
+  .thanks-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 44px 32px;
+    max-width: 440px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
   }
-  .success-circle {
-    fill: var(--sage);
-    transition: fill 0.2s ease;
+
+  .icon-ring {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: var(--sage-bg);
+    color: var(--sage);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .success-check {
-    stroke: #ffffff;
+
+  .icon-ring svg {
+    width: 32px;
+    height: 32px;
   }
-  .success-star {
-    fill: var(--brass);
-    transition: fill 0.2s ease;
+
+  .thanks-card h2 {
+    font-family: 'Cairo', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: var(--text);
+  }
+
+  .thanks-card p {
+    color: var(--text-soft);
+    font-size: 14.5px;
+    line-height: 1.7;
+    margin: 0;
+  }
+
+  .thanks-card strong {
+    color: var(--text);
   }
 </style>
 {% endblock %}
