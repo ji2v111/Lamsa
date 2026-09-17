@@ -2,8 +2,40 @@
 {% block title %}شكرًا لك{% endblock %}
 {% block content %}
 <div class="center-state" style="padding:0 30px;">
-  <img class="for-light" src="/static/illustrations/success-light.jpg" alt="" role="presentation"><img class="for-dark" src="/static/illustrations/success-dark.jpg" alt="" role="presentation">
+  <div class="success-icon-wrap">
+    <svg viewBox="0 0 120 120" class="success-svg">
+      <circle cx="60" cy="60" r="46" class="success-circle"/>
+      <path class="success-check" d="M42 61 L54 73 L78 47" fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path class="success-star" d="M28,36 L30,41 L35,41 L31,44 L33,49 L28,46 L23,49 L25,44 L21,41 L26,41 Z"/>
+      <path class="success-star" d="M92,30 L94,35 L99,35 L95,38 L97,43 L92,40 L87,43 L89,38 L85,35 L90,35 Z"/>
+      <path class="success-star" d="M90,82 L91.5,85.5 L95.5,85.5 L92.5,88 L94,92 L90,89.5 L86,92 L87.5,88 L84.5,85.5 L88.5,85.5 Z"/>
+    </svg>
+  </div>
   <h2>شكرًا لك</h2>
   <p>وصلت ملاحظتك إلى إدارة {{ tenant.name }} مباشرة، وسيتم التواصل معك إن احتجت ذلك.</p>
 </div>
+
+<style>
+  .success-icon-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .success-svg {
+    width: 100px;
+    height: 100px;
+  }
+  .success-circle {
+    fill: var(--sage);
+    transition: fill 0.2s ease;
+  }
+  .success-check {
+    stroke: #ffffff;
+  }
+  .success-star {
+    fill: var(--brass);
+    transition: fill 0.2s ease;
+  }
+</style>
 {% endblock %}
