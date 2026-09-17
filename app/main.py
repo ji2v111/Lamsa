@@ -189,10 +189,12 @@ def feedback_submit(
 
 # ---------- تسجيل دخول لوحة التحكم ----------
 
-@app.get("/admin/login")
+@app.api_route("/admin/login", methods=["GET", "HEAD"])
 def admin_login_page(request: Request):
     return templates.TemplateResponse("admin_login.html", {"request": request, "error": None, "show_logout": False})
-
+@app.api_route("/healthz", methods=["GET", "HEAD"])
+def healthz():
+    return Response(content="ok", media_type="text/plain")
 
 @app.post("/admin/login")
 def admin_login_submit(request: Request, password: str = Form(...)):
