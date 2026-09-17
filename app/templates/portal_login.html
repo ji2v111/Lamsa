@@ -1,87 +1,172 @@
 {% extends "admin_base.html" %}
-{% block title %}دخول صاحب المحل - لمسة{% endblock %}
+{% block title %}بوابة التاجر - لمسة{% endblock %}
 {% block body %}
-<div class="login-wrap">
-  <div class="split-auth-card">
-
-    <div class="auth-form-side">
-      <div class="auth-brand">
-        <svg viewBox="0 0 100 100" class="auth-logo">
+<div class="split-viewport">
+  
+  <div class="half-pane form-pane">
+    <div class="auth-card-wide">
+      
+      <div class="auth-brand-center">
+        <svg viewBox="0 0 100 100" class="auth-logo-svg">
           <path class="logo-star" d="M50,16 L58.52,38.27 L82.34,39.49 L63.79,54.48 L69.99,77.51 L50,64.5 L30.01,77.51 L36.21,54.48 L17.66,39.49 L41.48,38.27 Z"/>
           <path class="logo-ripple" d="M60,12 A8,8 0 0,1 75,15" fill="none" stroke-width="2.8" stroke-linecap="round"/>
           <path class="logo-ripple" d="M54,3 A17,17 0 0,1 82,10" fill="none" stroke-width="2.8" stroke-linecap="round"/>
         </svg>
-        <span class="auth-title">لمسة</span>
+        <span class="auth-brand-text">لمسة</span>
       </div>
 
-      <div class="auth-header">
-        <h1>بوابة التاجر</h1>
-        <p class="muted">أدخل بريدك الإلكتروني ليصلك رمز تسجيل الدخول</p>
+      <div class="auth-titles">
+        <h2>بوابة التاجر</h2>
+        <p class="muted">أدخل بريدك الإلكتروني المسجّل ليصلك رمز الدخول</p>
       </div>
 
-      <form method="post" action="/portal/login" class="auth-form">
+      <form method="post" action="/portal/login" class="auth-form-body">
         <label for="email">البريد الإلكتروني</label>
         <input type="email" id="email" name="email" autofocus required placeholder="owner@example.com">
         {% if error %}
-          <p class="auth-error" role="alert">{{ error }}</p>
+          <p class="auth-error-text" role="alert">{{ error }}</p>
         {% endif %}
-        <button class="btn auth-btn" type="submit">إرسال الرمز</button>
+        <button class="btn btn-auth-large" type="submit">إرسال الرمز</button>
       </form>
-    </div>
 
-    <div class="auth-banner-side">
-      <img class="for-light" src="/static/illustrations/hero-light.jpg" alt="لمسة NFC">
-      <img class="for-dark" src="/static/illustrations/hero-dark.jpg" alt="لمسة NFC">
     </div>
-
   </div>
+
+  <div class="half-pane banner-pane">
+    <img class="for-light banner-img" src="/static/illustrations/hero-light.jpg" alt="لمسة NFC">
+    <img class="for-dark banner-img" src="/static/illustrations/hero-dark.jpg" alt="لمسة NFC">
+  </div>
+
 </div>
 
 <style>
-  .split-auth-card {
-    display: flex;
-    max-width: 860px;
-    width: 100%;
-    min-height: 520px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 28px;
-    overflow: hidden;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+  body {
+    overflow-x: hidden;
   }
-  .auth-form-side {
-    flex: 1.1;
-    padding: 50px 42px;
+
+  .split-viewport {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+  }
+
+  .half-pane {
+    flex: 1;
+    width: 50vw;
+    min-height: 100vh;
+  }
+
+  .form-pane {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background: var(--paper);
+  }
+
+  .auth-card-wide {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 28px;
+    padding: 56px 48px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  }
+
+  .auth-brand-center {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-  }
-  .auth-brand {
-    display: flex;
     align-items: center;
-    gap: 10px;
     margin-bottom: 24px;
   }
-  .auth-logo { width: 36px; height: 36px; }
-  .auth-title { font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 20px; }
-  .auth-header h1 { font-size: 24px; margin: 0 0 6px; }
-  .auth-header p { margin: 0 0 26px; font-size: 14px; }
-  .auth-form input[type=email] { margin-bottom: 12px; padding: 13px 15px; font-size: 15px; }
-  .auth-error { color: var(--danger); font-size: 13px; margin: -4px 0 12px; }
-  .auth-btn { width: 100%; justify-content: center; padding: 13px; font-size: 15px; margin-top: 6px; }
-  .auth-banner-side {
-    flex: 1;
+
+  .auth-logo-svg {
+    width: 50px;
+    height: 50px;
+  }
+
+  .auth-brand-text {
+    font-family: 'Cairo', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    margin-top: 8px;
+    color: var(--text);
+  }
+
+  .auth-titles {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .auth-titles h2 {
+    font-size: 24px;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+
+  .auth-titles p {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .auth-form-body label {
+    font-size: 15px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .auth-form-body input[type=email] {
+    padding: 15px 18px;
+    font-size: 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
+  .auth-error-text {
+    color: var(--danger);
+    font-size: 13.5px;
+    margin: -8px 0 14px;
+  }
+
+  .btn-auth-large {
+    width: 100%;
+    justify-content: center;
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+
+  .banner-pane {
+    position: relative;
     background: var(--card-2);
     border-inline-start: 1px solid var(--line);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
   }
-  .auth-banner-side img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  @media (max-width: 768px) {
-    .split-auth-card { max-width: 420px; min-height: auto; }
-    .auth-banner-side { display: none; }
-    .auth-form-side { padding: 36px 24px; }
+
+  .banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  @media (max-width: 900px) {
+    .split-viewport {
+      flex-direction: column;
+    }
+    .banner-pane {
+      display: none;
+    }
+    .form-pane {
+      width: 100vw;
+      padding: 24px 16px;
+    }
+    .auth-card-wide {
+      padding: 38px 24px;
+      max-width: 420px;
+    }
   }
 </style>
 {% endblock %}

@@ -1,146 +1,179 @@
 {% extends "admin_base.html" %}
 {% block title %}تسجيل الدخول - لمسة{% endblock %}
 {% block body %}
-<div class="login-wrap">
-  <div class="split-auth-card">
-
-    <!-- جهة نموذج الدخول (يمين) -->
-    <div class="auth-form-side">
-      <div class="auth-brand">
-        <svg viewBox="0 0 100 100" class="auth-logo">
+<div class="split-viewport">
+  
+  <!-- النصف الأول: نموذج الدخول متوسّط في مساحته -->
+  <div class="half-pane form-pane">
+    <div class="auth-card-wide">
+      
+      <div class="auth-brand-center">
+        <svg viewBox="0 0 100 100" class="auth-logo-svg">
           <path class="logo-star" d="M50,16 L58.52,38.27 L82.34,39.49 L63.79,54.48 L69.99,77.51 L50,64.5 L30.01,77.51 L36.21,54.48 L17.66,39.49 L41.48,38.27 Z"/>
           <path class="logo-ripple" d="M60,12 A8,8 0 0,1 75,15" fill="none" stroke-width="2.8" stroke-linecap="round"/>
           <path class="logo-ripple" d="M54,3 A17,17 0 0,1 82,10" fill="none" stroke-width="2.8" stroke-linecap="round"/>
         </svg>
-        <span class="auth-title">لمسة</span>
+        <span class="auth-brand-text">لمسة</span>
       </div>
 
-      <div class="auth-header">
-        <h1>لوحة التحكم</h1>
+      <div class="auth-titles">
+        <h2>لوحة التحكم</h2>
         <p class="muted">أدخل كلمة المرور للمتابعة إلى الإدارة المركزية</p>
       </div>
 
-      <form method="post" action="/admin/login" class="auth-form">
+      <form method="post" action="/admin/login" class="auth-form-body">
         <label for="pw">كلمة المرور</label>
         <input type="password" id="pw" name="password" autofocus required placeholder="••••••••">
         {% if error %}
-          <p class="auth-error" role="alert">{{ error }}</p>
+          <p class="auth-error-text" role="alert">{{ error }}</p>
         {% endif %}
-        <button class="btn auth-btn" type="submit">دخول</button>
+        <button class="btn btn-auth-large" type="submit">دخول</button>
       </form>
-    </div>
 
-    <!-- جهة البانر / الصورة الطولية (يسار) -->
-    <div class="auth-banner-side">
-      <img class="for-light" src="/static/illustrations/hero-light.jpg" alt="لمسة NFC">
-      <img class="for-dark" src="/static/illustrations/hero-dark.jpg" alt="لمسة NFC">
     </div>
-
   </div>
+
+  <!-- النصف الثاني: الصورة تغطي نصف الشاشة بالكامل -->
+  <div class="half-pane banner-pane">
+    <img class="for-light banner-img" src="/static/illustrations/hero-light.jpg" alt="لمسة NFC">
+    <img class="for-dark banner-img" src="/static/illustrations/hero-dark.jpg" alt="لمسة NFC">
+  </div>
+
 </div>
 
 <style>
-  .split-auth-card {
+  /* إلغاء حشوات البودي الافتراضية لمنح الشاشة تقسيماً كاملاً */
+  body {
+    overflow-x: hidden;
+  }
+
+  .split-viewport {
     display: flex;
-    max-width: 860px;
-    width: 100%;
-    min-height: 520px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 28px;
-    overflow: hidden;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+    min-height: 100vh;
+    width: 100vw;
+  }
+
+  /* كل قسم يأخذ 50% من عرض الشاشة */
+  .half-pane {
+    flex: 1;
+    width: 50vw;
+    min-height: 100vh;
   }
 
   /* قسم الفورم */
-  .auth-form-side {
-    flex: 1.1;
-    padding: 50px 42px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .auth-brand {
+  .form-pane {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    padding: 40px;
+    background: var(--paper);
+  }
+
+  /* البوكس الكبير الذي يتوسط نصف الشاشة */
+  .auth-card-wide {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 28px;
+    padding: 56px 48px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  }
+
+  .auth-brand-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 24px;
   }
 
-  .auth-logo {
-    width: 36px;
-    height: 36px;
+  .auth-logo-svg {
+    width: 50px;
+    height: 50px;
   }
 
-  .auth-title {
+  .auth-brand-text {
     font-family: 'Cairo', sans-serif;
     font-weight: 800;
-    font-size: 20px;
+    font-size: 22px;
+    margin-top: 8px;
     color: var(--text);
   }
 
-  .auth-header h1 {
+  .auth-titles {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  .auth-titles h2 {
     font-size: 24px;
-    margin: 0 0 6px;
+    margin: 0 0 8px;
     color: var(--text);
   }
 
-  .auth-header p {
-    margin: 0 0 26px;
+  .auth-titles p {
     font-size: 14px;
+    margin: 0;
   }
 
-  .auth-form input[type=password] {
-    margin-bottom: 12px;
-    padding: 13px 15px;
+  .auth-form-body label {
     font-size: 15px;
+    margin-bottom: 8px;
+    font-weight: 600;
   }
 
-  .auth-error {
+  .auth-form-body input[type=password] {
+    padding: 15px 18px;
+    font-size: 16px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
+  .auth-error-text {
     color: var(--danger);
-    font-size: 13px;
-    margin: -4px 0 12px;
+    font-size: 13.5px;
+    margin: -8px 0 14px;
   }
 
-  .auth-btn {
+  .btn-auth-large {
     width: 100%;
     justify-content: center;
-    padding: 13px;
-    font-size: 15px;
-    margin-top: 6px;
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 12px;
   }
 
-  /* قسم البانر الطولي */
-  .auth-banner-side {
-    flex: 1;
+  /* قسم البانر الذي يأخذ النصف الآخر كاملاً */
+  .banner-pane {
+    position: relative;
     background: var(--card-2);
     border-inline-start: 1px solid var(--line);
-    position: relative;
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
-  .auth-banner-side img {
+  .banner-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     display: block;
   }
 
-  /* التجاوب مع شاشات الجوال */
-  @media (max-width: 768px) {
-    .split-auth-card {
-      max-width: 420px;
-      min-height: auto;
+  /* في شاشات الجوال والشاشات العمودية */
+  @media (max-width: 900px) {
+    .split-viewport {
+      flex-direction: column;
     }
-    .auth-banner-side {
+    .banner-pane {
       display: none;
     }
-    .auth-form-side {
-      padding: 36px 24px;
+    .form-pane {
+      width: 100vw;
+      padding: 24px 16px;
+    }
+    .auth-card-wide {
+      padding: 38px 24px;
+      max-width: 420px;
     }
   }
 </style>
